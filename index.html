@@ -2,7 +2,6 @@
     body {
         display: flex;
         justify-content: center;
-        /*align-item*/
         background-color: black;
     }
     div {
@@ -13,4 +12,16 @@
         box-shadow: 0 0 1000px 100px #00ff00;
     }
 </style>
-<div></div>
+<script>
+"use strict"
+window.addEventListener("load", () => {
+    circle.addEventListener("click", () => {
+        document.fullscreenEnabled && circle.requestFullScreen() ||
+        document.webkitFullscreenEnabled && circle.webkitRequestFullScreen() ||
+        document.mozFullScreenEnabled && circle.mozRequestFullScreen() ||
+        document.msFullScreenEnabled && circle.msRequestFullScreen()
+    })
+})
+
+</script>
+<div id="circle"></div>
