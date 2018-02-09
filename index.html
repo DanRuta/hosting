@@ -8,6 +8,7 @@
         touch-action: none;
     }
     #circle {
+        display: none;
         height: 50vw;
         width: 50vw;
         pointer-events: none;
@@ -34,8 +35,8 @@
         background-color: white;
     }*/
 </style>
-<!-- <div id="circle"></div> -->
-<div id="debug">_3</div>
+<div id="circle"></div>
+<div id="debug">_4</div>
 <div id="eventArea">
 
 <!-- <div id="target"></div> -->
@@ -48,6 +49,7 @@ let tapHoldTimer
 
 const onHold = () => {
     console.log("tap and hold")
+    circle.style.display = "block"
     debug.innerHTML = "tap and hold"
 }
 
@@ -78,6 +80,9 @@ const touchMoveEvent = e => {
 
 const touchEndEvent = e => {
     e.preventDefault()
+
+    circle.style.display = "none"
+
 
     if (tapHoldTimer) {
         clearTimeout(tapHoldTimer)
