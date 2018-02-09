@@ -126,14 +126,14 @@ const touchEndEvent = e => {
     }
 }
 
-// eventArea.addEventListener("touchstart", touchStartEvent)
-// eventArea.addEventListener("mousedown", touchStartEvent)
+eventArea.addEventListener("touchstart", touchStartEvent)
+eventArea.addEventListener("mousedown", touchStartEvent)
 
-// eventArea.addEventListener("touchmove", touchMoveEvent)
-// eventArea.addEventListener("mousemovemove", touchMoveEvent)
+eventArea.addEventListener("touchmove", touchMoveEvent)
+eventArea.addEventListener("mousemovemove", touchMoveEvent)
 
-// eventArea.addEventListener("touchend", touchEndEvent)
-// eventArea.addEventListener("mouseup", touchEndEvent)
+eventArea.addEventListener("touchend", touchEndEvent)
+eventArea.addEventListener("mouseup", touchEndEvent)
 
 // Pinch
 let previousDiff = -1
@@ -142,7 +142,7 @@ const events = []
 const poninterDown = e => {
 
     // e.preventDefault()
-    debug.innerHTML = "poninterDown"
+    // debug.innerHTML = "poninterDown"
 
 
     events.push(e)
@@ -190,7 +190,7 @@ const pointerMove = e => {
 
 const pointerUp = e => {
 
-    debug.innerHTML = "pointerUp"
+    // debug.innerHTML = "pointerUp"
 
 
     // Remove the event
@@ -214,12 +214,6 @@ eventArea.addEventListener("pointercancel", pointerUp)
 eventArea.addEventListener("pointerout", pointerUp)
 eventArea.addEventListener("pointerleave", pointerUp)
 
-// eventArea.onpointerdown = poninterDown
-// eventArea.onpointermove = pointerMove
-// eventArea.onpointerup = pointerUp
-// eventArea.onpointercancel = pointerUp
-// eventArea.onpointerout = pointerUp
-// eventArea.onpointerleave = pointerUp
 
 eventArea.addEventListener("click", () => debug.innerHTML = "click")
 
