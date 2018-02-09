@@ -22,8 +22,15 @@
 window.addEventListener("load", () => {
 
     // Tap and hold
+    let tapHoldTimer
+
+    const onHold = () => {
+        console.log("tap and hold")
+    }
 
     // Double tap
+    let doubleTapTimeout
+    let lastTap = 0
 
     // Swipe
     let touchstartX = 0
@@ -33,14 +40,48 @@ window.addEventListener("load", () => {
 
     // window.addEventListener("touchstart", ({screenX, screenY}) => {
     window.addEventListener("touchstart", e => {
+
+        e.preventDefault()
+
+        tapHoldTimer = setTimeout(onHold, 500)
+
+
         // touchstartX = e.screenX
         // touchstartY = e.screenY
         touchstartX = e.changedTouches[0].screenX
         touchstartY = e.changedTouches[0].screenY
     })
 
+    window.addEventListener("touchmove", e => {
+        if (tapHoldTimer) {
+            clearTimeout(tapHoldTimer)
+        }
+    })
+
     // window.addEventListener("touchend", ({screenX, screenY}) => {
     window.addEventListener("touchend", e => {
+
+        e.preventDefault()
+
+        if (tapHoldTimer) {
+            clearTimeout(tapHoldTimer)
+        }
+
+        const currTime = new Date().getTime()
+        const tapLength = currTime - lastTap
+
+        if (doubleTapTimeout) {
+            clearTimeout(doubleTapTimeout)
+        }
+
+        if (tapLength < 500 && tapLength > 0) {
+            console.log("double tap")
+        } else {
+            console.log("single tap")
+            doubleTapTimeout = setTimeout(() => clearTimeout(doubleTapTimeout), 500)
+        }
+
+
         // touchendX = e.screenX
         // touchendY = e.screenY
         touchendX = e.changedTouches[0].screenX
@@ -73,11 +114,15 @@ window.addEventListener("load", () => {
     const events = []
 
     const poninterDown = e => {
+
+        e.preventDefault()
+
         events.push(e)
-        console.log("poninterDown", e)
     }
 
     const pointerMove = e => {
+
+        e.preventDefault()
 
         // Update the pointer event
         for (let pi=0; pi<events.length; pi++) {
