@@ -4,6 +4,7 @@
         justify-content: center;
         background-color: black;
         margin: 0;
+        touch-action: none;
     }
     #circle {
         height: 50vw;
@@ -113,33 +114,33 @@ window.addEventListener("load", () => {
         }
     }
 
-    eventArea.addEventListener("touchstart", touchStartEvent)
-    eventArea.addEventListener("mousedown", touchStartEvent)
+    // eventArea.addEventListener("touchstart", touchStartEvent)
+    // eventArea.addEventListener("mousedown", touchStartEvent)
 
-    eventArea.addEventListener("touchmove", touchMoveEvent)
-    eventArea.addEventListener("mousemovemove", touchMoveEvent)
+    // eventArea.addEventListener("touchmove", touchMoveEvent)
+    // eventArea.addEventListener("mousemovemove", touchMoveEvent)
 
-    eventArea.addEventListener("touchend", touchEndEvent)
-    eventArea.addEventListener("mouseup", touchEndEvent)
+    // eventArea.addEventListener("touchend", touchEndEvent)
+    // eventArea.addEventListener("mouseup", touchEndEvent)
 
     // Pinch
-    let previousDiff
+    let previousDiff = -1
     const events = []
 
     const poninterDown = e => {
 
-        e.preventDefault()
+        // e.preventDefault()
 
         events.push(e)
     }
 
     const pointerMove = e => {
 
-        e.preventDefault()
+        // e.preventDefault()
 
         // Update the pointer event
         for (let pi=0; pi<events.length; pi++) {
-            if (events[pi].pointerId==e.pointerId) {
+            if (events[pi].pointerId == e.pointerId) {
                 events[pi] = e
                 break
             }
@@ -149,8 +150,9 @@ window.addEventListener("load", () => {
         if (events.length == 2) {
 
             const diffX = Math.abs(events[0].clientX - events[1].clientX)
-            const diffY = Math.abs(events[0].clientY - events[1].clientY)
-            const diff = Math.max(diffX, diffY)
+            // const diffY = Math.abs(events[0].clientY - events[1].clientY)
+            // const diff = Math.max(diffX, diffY)
+            const diff = diffX
 
             if (previousDiff > 0) {
                 if (diff > previousDiff) {
@@ -175,6 +177,7 @@ window.addEventListener("load", () => {
         for (let pi=0; pi<events.length; pi++) {
             if (events[pi].pointerId==e.pointerId) {
                 events.splice(pi, 1)
+                break
             }
         }
 
@@ -204,7 +207,7 @@ window.addEventListener("load", () => {
 
 </script>
     <div id="circle"></div>
-    <div id="debug"></div>
+    <div id="debug">_</div>
     <div id="eventArea">
 
 </div>
