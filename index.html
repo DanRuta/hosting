@@ -31,16 +31,12 @@
         /*background-color: red;*/
     }
 </style>
-
-<div id="debug">
-    _10
-    <div id="circle"></div>
-</div>
+<div id="circle"></div>
+<div id="debug">_6</div>
 <div id="eventArea">
 
 <script>
 "use strict"
-
 
 // Tap and hold
 let tapHoldTimer
@@ -60,6 +56,7 @@ let lastTap = 0
 
 // Swipe
 let touchstartX = 0
+let touchstartY = 0
 let touchendX = 0
 let touchendY = 0
 let swipeCounter = 0
@@ -70,11 +67,17 @@ const touchStartEvent = e => {
     e.preventDefault()
 
     if (!tapHoldTimer) {
-        tapHoldTimer = setTimeout(onHold, 250)
+        tapHoldTimer = setTimeout(onHold, 500)
     }
     touchstartX = e.changedTouches[0].screenX
+    touchstartY = e.changedTouches[0].screenY
 }
 
+const touchMoveEvent = e => {
+    // if (tapHoldTimer) {
+    //     clearTimeout(tapHoldTimer)
+    // }
+}
 
 const touchEndEvent = e => {
     e.preventDefault()
@@ -140,6 +143,9 @@ const touchEndEvent = e => {
 
 eventArea.addEventListener("touchstart", touchStartEvent)
 eventArea.addEventListener("mousedown", touchStartEvent)
+
+eventArea.addEventListener("touchmove", touchMoveEvent)
+eventArea.addEventListener("mousemovemove", touchMoveEvent)
 
 eventArea.addEventListener("touchend", touchEndEvent)
 eventArea.addEventListener("mouseup", touchEndEvent)
