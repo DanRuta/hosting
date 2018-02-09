@@ -48,6 +48,7 @@ let tapHoldTimer
 
 const onHold = () => {
     console.log("tap and hold")
+    debug.innerHTML = "tap and hold"
 }
 
 // Double tap
@@ -64,10 +65,6 @@ const touchStartEvent = e => {
     e.preventDefault()
 
     tapHoldTimer = setTimeout(onHold, 500)
-
-
-    // touchstartX = e.screenX
-    // touchstartY = e.screenY
     touchstartX = e.changedTouches[0].screenX
     touchstartY = e.changedTouches[0].screenY
 }
@@ -92,18 +89,21 @@ const touchEndEvent = e => {
         clearTimeout(doubleTapTimeout)
     }
 
+    lastTap = currTime
+
     if (tapLength < 500 && tapLength > 0) {
         console.log("double tap")
+        debug.innerHTML = "double tap"
+        event.preventDefault()
+        return
     } else {
-        console.log("single tap")
+        console.log("single tap", tapLength)
+        // debug.innerHTML = "single tap"
         doubleTapTimeout = setTimeout(() => clearTimeout(doubleTapTimeout), 500)
     }
 
 
-    // touchendX = e.screenX
-    // touchendY = e.screenY
     touchendX = e.changedTouches[0].screenX
-    // touchendY = e.changedTouches[0].screenY
 
     if (touchendX < (touchstartX-10)) {
         console.log("swiped left")
@@ -114,16 +114,6 @@ const touchEndEvent = e => {
         console.log("swiped right")
         debug.innerHTML = "swiped right"
     }
-
-    // if (touchendY < (touchstartY-10)) {
-    //     console.log("swiped up")
-    //     debug.innerHTML = "swiped up"
-    // }
-
-    // if (touchendY > (touchstartY+10)) {
-    //     console.log("swiped down")
-    //     debug.innerHTML = "swiped down"
-    // }
 }
 
 eventArea.addEventListener("touchstart", touchStartEvent)
