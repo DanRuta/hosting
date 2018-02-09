@@ -3,18 +3,27 @@
         display: flex;
         justify-content: center;
         background-color: black;
+        margin: 0;
     }
     #circle {
         height: 50vw;
         width: 50vw;
+        pointer-events: none;
         background-color: #00ff00;
         border-radius: 50%;
         box-shadow: 0 0 1000px 100px #00ff00;
     }
     #debug {
         position: absolute;
+        pointer-events: none;
         font-size: 67px;
         color: blue;
+    }
+    #eventArea {
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        /*background-color: red;*/
     }
 </style>
 <script>
@@ -38,9 +47,7 @@ window.addEventListener("load", () => {
     let touchendX = 0
     let touchendY = 0
 
-    // window.addEventListener("touchstart", ({screenX, screenY}) => {
-    window.addEventListener("touchstart", e => {
-
+    const touchStartEvent = e => {
         e.preventDefault()
 
         tapHoldTimer = setTimeout(onHold, 500)
@@ -50,17 +57,15 @@ window.addEventListener("load", () => {
         // touchstartY = e.screenY
         touchstartX = e.changedTouches[0].screenX
         touchstartY = e.changedTouches[0].screenY
-    })
+    }
 
-    window.addEventListener("touchmove", e => {
+    const touchMoveEvent = e => {
         if (tapHoldTimer) {
             clearTimeout(tapHoldTimer)
         }
-    })
+    }
 
-    // window.addEventListener("touchend", ({screenX, screenY}) => {
-    window.addEventListener("touchend", e => {
-
+    const touchEndEvent = e => {
         e.preventDefault()
 
         if (tapHoldTimer) {
@@ -106,8 +111,16 @@ window.addEventListener("load", () => {
             console.log("swiped down")
             debug.innerHTML = "swiped down"
         }
+    }
 
-    })
+    eventArea.addEventListener("touchstart", touchStartEvent)
+    eventArea.addEventListener("mousedown", touchStartEvent)
+
+    eventArea.addEventListener("touchmove", touchMoveEvent)
+    eventArea.addEventListener("mousemovemove", touchMoveEvent)
+
+    eventArea.addEventListener("touchend", touchEndEvent)
+    eventArea.addEventListener("mouseup", touchEndEvent)
 
     // Pinch
     let previousDiff
@@ -158,14 +171,25 @@ window.addEventListener("load", () => {
 
     const pointerUp = e => {
 
+        // Remove the event
+        for (let pi=0; pi<events.length; pi++) {
+            if (events[pi].pointerId==e.pointerId) {
+                events.splice(pi, 1)
+            }
+        }
+
+        if (events.length < 2) {
+            previousDiff = -1
+        }
+
     }
 
-    window.addEventListener("pointerdown", poninterDown)
-    window.addEventListener("pointermove", pointerMove)
-    window.addEventListener("pointerup", pointerUp)
-    window.addEventListener("pointercancel", pointerUp)
-    window.addEventListener("pointerout", pointerUp)
-    window.addEventListener("pointerleave", pointerUp)
+    eventArea.addEventListener("pointerdown", poninterDown)
+    eventArea.addEventListener("pointermove", pointerMove)
+    eventArea.addEventListener("pointerup", pointerUp)
+    eventArea.addEventListener("pointercancel", pointerUp)
+    eventArea.addEventListener("pointerout", pointerUp)
+    eventArea.addEventListener("pointerleave", pointerUp)
 
 
 
@@ -179,5 +203,8 @@ window.addEventListener("load", () => {
 })
 
 </script>
-<div id="circle"></div>
-<div id="debug"></div>
+    <div id="circle"></div>
+    <div id="debug"></div>
+    <div id="eventArea">
+
+</div>
