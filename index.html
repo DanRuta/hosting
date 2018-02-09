@@ -31,12 +31,16 @@
         /*background-color: red;*/
     }
 </style>
-<div id="circle"></div>
-<div id="debug">_6</div>
+
+<div id="debug">
+    _8
+    <div id="circle"></div>
+</div>
 <div id="eventArea">
 
 <script>
 "use strict"
+
 
 // Tap and hold
 let tapHoldTimer
@@ -56,7 +60,6 @@ let lastTap = 0
 
 // Swipe
 let touchstartX = 0
-let touchstartY = 0
 let touchendX = 0
 let touchendY = 0
 let swipeCounter = 0
@@ -67,17 +70,11 @@ const touchStartEvent = e => {
     e.preventDefault()
 
     if (!tapHoldTimer) {
-        tapHoldTimer = setTimeout(onHold, 500)
+        tapHoldTimer = setTimeout(onHold, 250)
     }
     touchstartX = e.changedTouches[0].screenX
-    touchstartY = e.changedTouches[0].screenY
 }
 
-const touchMoveEvent = e => {
-    // if (tapHoldTimer) {
-    //     clearTimeout(tapHoldTimer)
-    // }
-}
 
 const touchEndEvent = e => {
     e.preventDefault()
@@ -179,9 +176,9 @@ const pointerMove = e => {
     if (events.length == 2) {
 
         const diffX = Math.abs(events[0].clientX - events[1].clientX)
-        // const diffY = Math.abs(events[0].clientY - events[1].clientY)
-        // const diff = Math.max(diffX, diffY)
-        const diff = diffX
+        const diffY = Math.abs(events[0].clientY - events[1].clientY)
+        const diff = Math.max(diffX, diffY)
+        // const diff = diffX
 
         if (previousDiff > 0) {
             if (diff > previousDiff) {
