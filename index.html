@@ -19,20 +19,20 @@
         box-shadow: 0 0 1000px 100px #00ff00;
     }
     #debug {
+        display: none;
         position: absolute;
         pointer-events: none;
         font-size: 67px;
         color: blue;
     }
     #eventArea {
-        height: 50vh;
+        height: 100vh;
         width: 100vw;
         position: absolute;
-        /*background-color: red;*/
     }
 </style>
 <div id="circle"></div>
-<div id="debug">_8</div>
+<div id="debug">_9</div>
 <div id="eventArea">
 
 <script>
@@ -41,13 +41,18 @@
 // Tap and hold
 let tapHoldTimer
 
+const sendData = data => {
+    console.log(data)
+    debug.innerHTML = data
+}
+
 const onHold = () => {
 
     if (swipeCounter>0 || pinchCounter>0) return
 
     console.log("tap and hold")
     circle.style.display = "block"
-    debug.innerHTML = "tap and hold"
+    sendData("hold")
 }
 
 // Double tap
@@ -58,10 +63,8 @@ let lastTap = 0
 let touchstartX = 0
 let touchstartY = 0
 let touchendX = 0
-// let touchendY = 0
 let swipeCounter = 0
 let pinchCounter = 0
-// let hasPinched = false
 
 const touchStartEvent = e => {
     e.preventDefault()
@@ -73,11 +76,6 @@ const touchStartEvent = e => {
     touchstartY = e.changedTouches[0].screenY
 }
 
-// const touchMoveEvent = e => {
-//     // if (tapHoldTimer) {
-//     //     clearTimeout(tapHoldTimer)
-//     // }
-// }
 
 const touchEndEvent = e => {
     e.preventDefault()
@@ -109,7 +107,8 @@ const touchEndEvent = e => {
 
     if (pinchCounter <= 0 && swipeCounter <= 0 && tapLength < 500 && tapLength > 0) {
         console.log("double tap")
-        debug.innerHTML = "double tap"
+        // debug.innerHTML = "double tap"
+        sendData("double")
         clearTimeout(tapHoldTimer)
         tapHoldTimer = undefined
         event.preventDefault()
@@ -128,7 +127,8 @@ const touchEndEvent = e => {
         console.log("swiped left")
         clearTimeout(tapHoldTimer)
         tapHoldTimer = undefined
-        debug.innerHTML = "swiped left"
+        // debug.innerHTML = "swiped left"
+        sendData("left")
         swipeCounter = 2
     }
 
@@ -136,16 +136,14 @@ const touchEndEvent = e => {
         console.log("swiped right")
         clearTimeout(tapHoldTimer)
         tapHoldTimer = undefined
-        debug.innerHTML = "swiped right"
+        // debug.innerHTML = "swiped right"
+        sendData("right")
         swipeCounter = 2
     }
 }
 
 eventArea.addEventListener("touchstart", touchStartEvent)
 eventArea.addEventListener("mousedown", touchStartEvent)
-
-// eventArea.addEventListener("touchmove", touchMoveEvent)
-// eventArea.addEventListener("mousemovemove", touchMoveEvent)
 
 eventArea.addEventListener("touchend", touchEndEvent)
 eventArea.addEventListener("mouseup", touchEndEvent)
@@ -159,8 +157,6 @@ const poninterDown = e => {
 }
 
 const pointerMove = e => {
-
-    // e.preventDefault()
 
     // Update the pointer event
     for (let pi=0; pi<events.length; pi++) {
@@ -181,7 +177,8 @@ const pointerMove = e => {
         if (previousDiff > 0) {
             if (diff > previousDiff) {
                 console.log("pinch out")
-                debug.innerHTML = "pinch out"
+                // debug.innerHTML = "pinch out"
+                sendData("out")
                 pinchCounter = 2
                 clearTimeout(tapHoldTimer)
                 tapHoldTimer = undefined
@@ -192,7 +189,8 @@ const pointerMove = e => {
                 pinchCounter = 2
                 clearTimeout(tapHoldTimer)
                 tapHoldTimer = undefined
-                debug.innerHTML = "pinch in"
+                // debug.innerHTML = "pinch in"
+                sendData("in")
             }
         }
 
@@ -223,17 +221,12 @@ eventArea.addEventListener("pointerout", pointerUp)
 eventArea.addEventListener("pointerleave", pointerUp)
 
 
-// eventArea.addEventListener("click", () => debug.innerHTML = "click")
-
-
-
-
-// circle.addEventListener("click", () => {
-//     document.fullscreenEnabled && circle.requestFullScreen() ||
-//     document.webkitFullscreenEnabled && circle.webkitRequestFullScreen() ||
-//     document.mozFullScreenEnabled && circle.mozRequestFullScreen() ||
-//     document.msFullScreenEnabled && circle.msRequestFullScreen()
-// })
+eventArea.addEventListener("click", () => {
+    document.fullscreenEnabled && eventArea.requestFullScreen() ||
+    document.webkitFullscreenEnabled && eventArea.webkitRequestFullScreen() ||
+    document.mozFullScreenEnabled && eventArea.mozRequestFullScreen() ||
+    document.msFullScreenEnabled && eventArea.msRequestFullScreen()
+})
 
 </script>
 
