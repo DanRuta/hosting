@@ -131,6 +131,8 @@ window.addEventListener("load", () => {
     const poninterDown = e => {
 
         // e.preventDefault()
+        debug.innerHTML = "poninterDown"
+
 
         events.push(e)
     }
@@ -177,6 +179,9 @@ window.addEventListener("load", () => {
 
     const pointerUp = e => {
 
+        debug.innerHTML = "pointerUp"
+
+
         // Remove the event
         for (let pi=0; pi<events.length; pi++) {
             if (events[pi].pointerId==e.pointerId) {
@@ -217,8 +222,8 @@ window.addEventListener("load", () => {
 })
 
 </script>
-    <div id="circle"></div>
-    <div id="debug">_</div>
+    <!-- <div id="circle"></div> -->
+    <div id="debug">_2</div>
     <div id="eventArea">
 
 </div>
