@@ -71,9 +71,9 @@ const touchStartEvent = e => {
 }
 
 const touchMoveEvent = e => {
-    if (tapHoldTimer) {
-        clearTimeout(tapHoldTimer)
-    }
+    // if (tapHoldTimer) {
+    //     clearTimeout(tapHoldTimer)
+    // }
 }
 
 const touchEndEvent = e => {
@@ -97,10 +97,12 @@ const touchEndEvent = e => {
     if (swipeCounter <= 0 && tapLength < 500 && tapLength > 0) {
         console.log("double tap")
         debug.innerHTML = "double tap"
+        clearTimeout(tapHoldTimer)
         event.preventDefault()
         return
     } else {
         console.log("single tap", tapLength)
+        clearTimeout(tapHoldTimer)
         // debug.innerHTML = "single tap"
         doubleTapTimeout = setTimeout(() => clearTimeout(doubleTapTimeout), 500)
     }
@@ -110,12 +112,14 @@ const touchEndEvent = e => {
 
     if (touchendX < (touchstartX-10)) {
         console.log("swiped left")
+        clearTimeout(tapHoldTimer)
         debug.innerHTML = "swiped left"
         swipeCounter = 2
     }
 
     if (touchendX > (touchstartX+10)) {
         console.log("swiped right")
+        clearTimeout(tapHoldTimer)
         debug.innerHTML = "swiped right"
         swipeCounter = 2
     }
