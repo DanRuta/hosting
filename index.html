@@ -32,7 +32,7 @@
     }
 </style>
 <div id="circle"></div>
-<div id="debug">_6</div>
+<div id="debug">_7</div>
 <div id="eventArea">
 
 <script>
@@ -67,7 +67,7 @@ const touchStartEvent = e => {
     e.preventDefault()
 
     if (!tapHoldTimer) {
-        tapHoldTimer = setTimeout(onHold, 500)
+        tapHoldTimer = setTimeout(onHold, 250)
     }
     touchstartX = e.changedTouches[0].screenX
     touchstartY = e.changedTouches[0].screenY
@@ -124,7 +124,7 @@ const touchEndEvent = e => {
 
     touchendX = e.changedTouches[0].screenX
 
-    if (touchendX < (touchstartX-10)) {
+    if (touchendX < (touchstartX-25)) {
         console.log("swiped left")
         clearTimeout(tapHoldTimer)
         tapHoldTimer = undefined
@@ -132,7 +132,7 @@ const touchEndEvent = e => {
         swipeCounter = 2
     }
 
-    if (touchendX > (touchstartX+10)) {
+    if (touchendX > (touchstartX+25)) {
         console.log("swiped right")
         clearTimeout(tapHoldTimer)
         tapHoldTimer = undefined
@@ -155,11 +155,6 @@ let previousDiff = -1
 const events = []
 
 const poninterDown = e => {
-
-    // e.preventDefault()
-    // debug.innerHTML = "poninterDown"
-
-
     events.push(e)
 }
 
@@ -207,10 +202,6 @@ const pointerMove = e => {
 }
 
 const pointerUp = e => {
-
-    // debug.innerHTML = "pointerUp"
-
-
     // Remove the event
     for (let pi=0; pi<events.length; pi++) {
         if (events[pi].pointerId==e.pointerId) {
@@ -222,7 +213,6 @@ const pointerUp = e => {
     if (events.length < 2) {
         previousDiff = -1
     }
-
 }
 
 eventArea.addEventListener("pointerdown", poninterDown)
