@@ -32,7 +32,7 @@
     }
 </style>
 <div id="circle"></div>
-<div id="debug">_5</div>
+<div id="debug">_6</div>
 <div id="eventArea">
 
 <script>
@@ -80,7 +80,7 @@ const touchEndEvent = e => {
     circle.style.display = "none"
     swipeCounter--
 
-    if (pinchCounter) {
+    if (pinchCounter>0) {
         pinchCounter--
         clearTimeout(tapHoldTimer)
         return
@@ -176,11 +176,13 @@ const pointerMove = e => {
                 console.log("pinch out")
                 debug.innerHTML = "pinch out"
                 pinchCounter = 2
+                clearTimeout(tapHoldTimer)
             }
 
             if (diff < previousDiff) {
                 console.log("pinch in")
                 pinchCounter = 2
+                clearTimeout(tapHoldTimer)
                 debug.innerHTML = "pinch in"
             }
         }
