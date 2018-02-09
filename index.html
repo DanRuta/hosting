@@ -27,18 +27,18 @@
         position: absolute;
         /*background-color: red;*/
     }
-    #target {
+   /* #target {
         height: 200px;
         width: 200px;
         border: 1px solid black;
         background-color: white;
-    }
+    }*/
 </style>
 <!-- <div id="circle"></div> -->
 <div id="debug">_3</div>
 <div id="eventArea">
 
-<div id="target"></div>
+<!-- <div id="target"></div> -->
 
 <script>
 "use strict"
@@ -103,7 +103,7 @@ const touchEndEvent = e => {
     // touchendX = e.screenX
     // touchendY = e.screenY
     touchendX = e.changedTouches[0].screenX
-    touchendY = e.changedTouches[0].screenY
+    // touchendY = e.changedTouches[0].screenY
 
     if (touchendX < (touchstartX-10)) {
         console.log("swiped left")
@@ -115,15 +115,15 @@ const touchEndEvent = e => {
         debug.innerHTML = "swiped right"
     }
 
-    if (touchendY < (touchstartY-10)) {
-        console.log("swiped up")
-        debug.innerHTML = "swiped up"
-    }
+    // if (touchendY < (touchstartY-10)) {
+    //     console.log("swiped up")
+    //     debug.innerHTML = "swiped up"
+    // }
 
-    if (touchendY > (touchstartY+10)) {
-        console.log("swiped down")
-        debug.innerHTML = "swiped down"
-    }
+    // if (touchendY > (touchstartY+10)) {
+    //     console.log("swiped down")
+    //     debug.innerHTML = "swiped down"
+    // }
 }
 
 eventArea.addEventListener("touchstart", touchStartEvent)
@@ -215,7 +215,7 @@ eventArea.addEventListener("pointerout", pointerUp)
 eventArea.addEventListener("pointerleave", pointerUp)
 
 
-eventArea.addEventListener("click", () => debug.innerHTML = "click")
+// eventArea.addEventListener("click", () => debug.innerHTML = "click")
 
 
 
