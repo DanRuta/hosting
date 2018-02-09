@@ -1,126 +1,335 @@
+
 <style>
-  div {
-    margin: 0em;
-    padding: 2em;
-  }
-  #target {
-    background: white;
-    border: 1px solid black;
-  }
+    body {
+        display: flex;
+        justify-content: center;
+        background-color: black;
+        margin: 0;
+        touch-action: none;
+    }
+    #circle {
+        height: 50vw;
+        width: 50vw;
+        pointer-events: none;
+        background-color: #00ff00;
+        border-radius: 50%;
+        box-shadow: 0 0 1000px 100px #00ff00;
+    }
+    #debug {
+        position: absolute;
+        pointer-events: none;
+        font-size: 67px;
+        color: blue;
+    }
+    #eventArea {
+        height: 50vh;
+        width: 100vw;
+        position: absolute;
+        /*background-color: red;*/
+    }
+    #target {
+        height: 200px;
+        width: 200px;
+        border: 1px solid black;
+        background-color: white;
+    }
 </style>
-</head>
+<!-- <div id="circle"></div> -->
+<div id="debug">_3</div>
+<div id="eventArea">
+
+<div id="target"></div>
+
+<script>
+"use strict"
+
+// Tap and hold
+let tapHoldTimer
+
+const onHold = () => {
+    console.log("tap and hold")
+}
+
+// Double tap
+let doubleTapTimeout
+let lastTap = 0
+
+// Swipe
+let touchstartX = 0
+let touchstartY = 0
+let touchendX = 0
+let touchendY = 0
+
+const touchStartEvent = e => {
+    e.preventDefault()
+
+    tapHoldTimer = setTimeout(onHold, 500)
 
 
-<body style="touch-action:none">
-<h1>Pointer Event pinch/zoom gesture</h1>
- <!-- Create element for pointer gestures. -->
- <div id="target">Touch and Hold with 2 pointers, then pinch in or out.<br/>
-    The background color will change to pink if the pinch is opening (Zoom In)
-    or changes to lightblue if the pinch is closing (Zoom out).</div>
- <!-- UI for logging/debugging -->
- <button id="log" onclick="enableLog(event);">Start/Stop event logging</button>
- <button id="clearlog" onclick="clearLog(event);">Clear the log</button>
- <p></p>
- <output></output>
+    // touchstartX = e.screenX
+    // touchstartY = e.screenY
+    touchstartX = e.changedTouches[0].screenX
+    touchstartY = e.changedTouches[0].screenY
+}
 
- <script>
- // Log events flag
- var logEvents = false;
- // Global vars to cache event state
- var evCache = new Array();
- var prevDiff = -1;
- // Logging/debugging functions
- function enableLog(ev) {
-   logEvents = logEvents ? false : true;
- }
- function log(prefix, ev) {
-   if (!logEvents) return;
-   var o = document.getElementsByTagName('output')[0];
-   var s = prefix + ": pointerID = " + ev.pointerId +
-                 " ; pointerType = " + ev.pointerType +
-                 " ; isPrimary = " + ev.isPrimary;
-   o.innerHTML += s + " <br>";
- }
- function clearLog(event) {
-  var o = document.getElementsByTagName('output')[0];
-  o.innerHTML = "";
- }
- function pointerdown_handler(ev) {
-  // The pointerdown event signals the start of a touch interaction.
-  // This event is cached to support 2-finger gestures
-  evCache.push(ev);
-  log("pointerDown", ev);
- }
- function pointermove_handler(ev) {
-  // This function implements a 2-pointer horizontal pinch/zoom gesture.
-  //
-  // If the distance between the two pointers has increased (zoom in),
-  // the taget element's background is changed to "pink" and if the
-  // distance is decreasing (zoom out), the color is changed to "lightblue".
-  //
-  // This function sets the target element's border to "dashed" to visually
-  // indicate the pointer's target received a move event.
-  log("pointerMove", ev);
-  ev.target.style.border = "dashed";
-  // Find this event in the cache and update its record with this event
-  for (var i = 0; i < evCache.length; i++) {
-    if (ev.pointerId == evCache[i].pointerId) {
-       evCache[i] = ev;
-    break;
+const touchMoveEvent = e => {
+    if (tapHoldTimer) {
+        clearTimeout(tapHoldTimer)
     }
-  }
-  // If two pointers are down, check for pinch gestures
-  if (evCache.length == 2) {
-    // Calculate the distance between the two pointers
-    var curDiff = Math.abs(evCache[0].clientX - evCache[1].clientX);
-    if (prevDiff > 0) {
-      if (curDiff > prevDiff) {
-        // The distance between the two pointers has increased
-        log("Pinch moving OUT -> Zoom in", ev);
-        ev.target.style.background = "pink";
-      }
-      if (curDiff < prevDiff) {
-        // The distance between the two pointers has decreased
-        log("Pinch moving IN -> Zoom out",ev);
-        ev.target.style.background = "lightblue";
-      }
-    }
-    // Cache the distance for the next move event
-    prevDiff = curDiff;
-  }
- }
- function pointerup_handler(ev) {
-   log(ev.type, ev);
-   // Remove this pointer from the cache and reset the target's
-   // background and border
-   remove_event(ev);
-   ev.target.style.background = "white";
-   ev.target.style.border = "1px solid black";
+}
 
-   // If the number of pointers down is less than two then reset diff tracker
-   if (evCache.length < 2) prevDiff = -1;
- }
- function remove_event(ev) {
-  // Remove this event from the target's cache
-  for (var i = 0; i < evCache.length; i++) {
-    if (evCache[i].pointerId == ev.pointerId) {
-      evCache.splice(i, 1);
-      break;
+const touchEndEvent = e => {
+    e.preventDefault()
+
+    if (tapHoldTimer) {
+        clearTimeout(tapHoldTimer)
     }
-  }
- }
- function init() {
-  // Install event handlers for the pointer target
-  var el=document.getElementById("target");
-  el.onpointerdown = pointerdown_handler;
-  el.onpointermove = pointermove_handler;
-  // Use same handler for pointer{up,cancel,out,leave} events since
-  // the semantics for these events - in this app - are the same.
-  el.onpointerup = pointerup_handler;
-  el.onpointercancel = pointerup_handler;
-  el.onpointerout = pointerup_handler;
-  el.onpointerleave = pointerup_handler;
+
+    const currTime = new Date().getTime()
+    const tapLength = currTime - lastTap
+
+    if (doubleTapTimeout) {
+        clearTimeout(doubleTapTimeout)
+    }
+
+    if (tapLength < 500 && tapLength > 0) {
+        console.log("double tap")
+    } else {
+        console.log("single tap")
+        doubleTapTimeout = setTimeout(() => clearTimeout(doubleTapTimeout), 500)
+    }
+
+
+    // touchendX = e.screenX
+    // touchendY = e.screenY
+    touchendX = e.changedTouches[0].screenX
+    touchendY = e.changedTouches[0].screenY
+
+    if (touchendX < (touchstartX-10)) {
+        console.log("swiped left")
+        debug.innerHTML = "swiped left"
+    }
+
+    if (touchendX > (touchstartX+10)) {
+        console.log("swiped right")
+        debug.innerHTML = "swiped right"
+    }
+
+    if (touchendY < (touchstartY-10)) {
+        console.log("swiped up")
+        debug.innerHTML = "swiped up"
+    }
+
+    if (touchendY > (touchstartY+10)) {
+        console.log("swiped down")
+        debug.innerHTML = "swiped down"
+    }
+}
+
+// eventArea.addEventListener("touchstart", touchStartEvent)
+// eventArea.addEventListener("mousedown", touchStartEvent)
+
+// eventArea.addEventListener("touchmove", touchMoveEvent)
+// eventArea.addEventListener("mousemovemove", touchMoveEvent)
+
+// eventArea.addEventListener("touchend", touchEndEvent)
+// eventArea.addEventListener("mouseup", touchEndEvent)
+
+// Pinch
+let previousDiff = -1
+const events = []
+
+const poninterDown = e => {
+
+    // e.preventDefault()
+    debug.innerHTML = "poninterDown"
+
+
+    events.push(e)
+}
+
+const pointerMove = e => {
+
+    // e.preventDefault()
+
+    // Update the pointer event
+    for (let pi=0; pi<events.length; pi++) {
+        if (events[pi].pointerId == e.pointerId) {
+            events[pi] = e
+            break
+        }
+    }
+
+    // Calculate new diff
+    if (events.length == 2) {
+
+        const diffX = Math.abs(events[0].clientX - events[1].clientX)
+        // const diffY = Math.abs(events[0].clientY - events[1].clientY)
+        // const diff = Math.max(diffX, diffY)
+        const diff = diffX
+
+        if (previousDiff > 0) {
+            if (diff > previousDiff) {
+                console.log("pinch out")
+                debug.innerHTML = "pinch out"
+            }
+
+            if (diff < previousDiff) {
+                console.log("pinch in")
+                debug.innerHTML = "pinch in"
+            }
+        } else {
+            console.log("nope")
+            debug.innerHTML = "__"
+        }
+
+        previousDiff = diff
+    }
+
+}
+
+const pointerUp = e => {
+
+    debug.innerHTML = "pointerUp"
+
+
+    // Remove the event
+    for (let pi=0; pi<events.length; pi++) {
+        if (events[pi].pointerId==e.pointerId) {
+            events.splice(pi, 1)
+            break
+        }
+    }
+
+    if (events.length < 2) {
+        previousDiff = -1
+    }
+
+}
+
+// eventArea.addEventListener("pointerdown", poninterDown)
+// eventArea.addEventListener("pointermove", pointerMove)
+// eventArea.addEventListener("pointerup", pointerUp)
+// eventArea.addEventListener("pointercancel", pointerUp)
+// eventArea.addEventListener("pointerout", pointerUp)
+// eventArea.addEventListener("pointerleave", pointerUp)
+
+eventArea.onpointerdown = poninterDown
+eventArea.onpointermove = pointerMove
+eventArea.onpointerup = pointerUp
+eventArea.onpointercancel = pointerUp
+eventArea.onpointerout = pointerUp
+eventArea.onpointerleave = pointerUp
+
+eventArea.addEventListener("click", () => debug.innerHTML = "click")
+
+
+
+
+// Global vars to cache event state
+var evCache = new Array();
+var prevDiff = -1;
+
+
+// Install event handlers for the pointer target
+ var el=document.getElementById("target");
+ el.onpointerdown = pointerdown_handler;
+ el.onpointermove = pointermove_handler;
+
+ // Use same handler for pointer{up,cancel,out,leave} events since
+ // the semantics for these events - in this app - are the same.
+ el.onpointerup = pointerup_handler;
+ el.onpointercancel = pointerup_handler;
+ el.onpointerout = pointerup_handler;
+ el.onpointerleave = pointerup_handler;
+
+
+function pointerdown_handler(ev) {
+ // The pointerdown event signals the start of a touch interaction.
+ // This event is cached to support 2-finger gestures
+ evCache.push(ev);
+ log("pointerDown", ev);
+}
+
+function pointermove_handler(ev) {
+ // This function implements a 2-pointer horizontal pinch/zoom gesture.
+ //
+ // If the distance between the two pointers has increased (zoom in),
+ // the taget element's background is changed to "pink" and if the
+ // distance is decreasing (zoom out), the color is changed to "lightblue".
+ //
+ // This function sets the target element's border to "dashed" to visually
+ // indicate the pointer's target received a move event.
+ log("pointerMove", ev);
+ ev.target.style.border = "dashed";
+
+ // Find this event in the cache and update its record with this event
+ for (var i = 0; i < evCache.length; i++) {
+   if (ev.pointerId == evCache[i].pointerId) {
+      evCache[i] = ev;
+   break;
+   }
  }
 
- init()
- </script>
+ // If two pointers are down, check for pinch gestures
+ if (evCache.length == 2) {
+   // Calculate the distance between the two pointers
+   var curDiff = Math.abs(evCache[0].clientX - evCache[1].clientX);
+
+   if (prevDiff > 0) {
+     if (curDiff > prevDiff) {
+       // The distance between the two pointers has increased
+       log("Pinch moving OUT -> Zoom in", ev);
+       ev.target.style.background = "pink";
+     }
+     if (curDiff < prevDiff) {
+       // The distance between the two pointers has decreased
+       log("Pinch moving IN -> Zoom out",ev);
+       ev.target.style.background = "lightblue";
+     }
+   }
+
+   // Cache the distance for the next move event
+   prevDiff = curDiff;
+ }
+}
+
+function pointerup_handler(ev) {
+  log(ev.type, ev);
+  // Remove this pointer from the cache and reset the target's
+  // background and border
+  remove_event(ev);
+  ev.target.style.background = "white";
+  ev.target.style.border = "1px solid black";
+
+  // If the number of pointers down is less than two then reset diff tracker
+  if (evCache.length < 2) prevDiff = -1;
+
+}
+
+function remove_event(ev) {
+ // Remove this event from the target's cache
+ for (var i = 0; i < evCache.length; i++) {
+   if (evCache[i].pointerId == ev.pointerId) {
+     evCache.splice(i, 1);
+     break;
+   }
+ }
+}
+
+function log (a, b) {
+    target.innerHTML = a
+}
+
+
+// circle.addEventListener("click", () => {
+//     document.fullscreenEnabled && circle.requestFullScreen() ||
+//     document.webkitFullscreenEnabled && circle.webkitRequestFullScreen() ||
+//     document.mozFullScreenEnabled && circle.mozRequestFullScreen() ||
+//     document.msFullScreenEnabled && circle.msRequestFullScreen()
+// })
+
+</script>
+
+
+
