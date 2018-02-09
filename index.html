@@ -60,6 +60,7 @@ let touchstartX = 0
 let touchstartY = 0
 let touchendX = 0
 let touchendY = 0
+let swipeCounter = 0
 
 const touchStartEvent = e => {
     e.preventDefault()
@@ -91,7 +92,9 @@ const touchEndEvent = e => {
 
     lastTap = currTime
 
-    if (tapLength < 500 && tapLength > 0) {
+    swipeCounter--
+
+    if (swipeCounter <= 0 && tapLength < 500 && tapLength > 0) {
         console.log("double tap")
         debug.innerHTML = "double tap"
         event.preventDefault()
@@ -108,11 +111,13 @@ const touchEndEvent = e => {
     if (touchendX < (touchstartX-10)) {
         console.log("swiped left")
         debug.innerHTML = "swiped left"
+        swipeCounter = 2
     }
 
     if (touchendX > (touchstartX+10)) {
         console.log("swiped right")
         debug.innerHTML = "swiped right"
+        swipeCounter = 2
     }
 }
 
