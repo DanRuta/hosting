@@ -33,7 +33,7 @@
 </style>
 
 <div id="debug">
-    _9
+    _10
     <div id="circle"></div>
 </div>
 <div id="eventArea">
@@ -173,9 +173,9 @@ const pointerMove = e => {
     if (events.length == 2) {
 
         const diffX = Math.abs(events[0].clientX - events[1].clientX)
-        const diffY = Math.abs(events[0].clientY - events[1].clientY)
-        const diff = Math.max(diffX, diffY)
-        // const diff = diffX
+        // const diffY = Math.abs(events[0].clientY - events[1].clientY)
+        // const diff = Math.max(diffX, diffY)
+        const diff = diffX
 
         if (previousDiff > 0) {
             if (diff > previousDiff) {
