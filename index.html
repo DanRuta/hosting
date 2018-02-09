@@ -5,6 +5,8 @@
         justify-content: center;
         background-color: black !important;
         margin: 0;
+        height: 100vh;
+        width: 100vw;
         touch-action: none;
     }
     #circle {
@@ -55,6 +57,7 @@ let touchstartY = 0
 let touchendX = 0
 let touchendY = 0
 let swipeCounter = 0
+let pinchCounter = 0
 let hasPinched = false
 
 const touchStartEvent = e => {
@@ -75,9 +78,11 @@ const touchEndEvent = e => {
     e.preventDefault()
 
     circle.style.display = "none"
+    swipeCounter--
 
-    if (hasPinched) {
-        hasPinched = false
+    if (pinchCounter) {
+        pinchCounter--
+        clearTimeout(tapHoldTimer)
         return
     }
 
@@ -87,16 +92,14 @@ const touchEndEvent = e => {
 
     const currTime = new Date().getTime()
     const tapLength = currTime - lastTap
+    lastTap = currTime
 
     if (doubleTapTimeout) {
         clearTimeout(doubleTapTimeout)
     }
 
-    lastTap = currTime
 
-    swipeCounter--
-
-    if (swipeCounter <= 0 && tapLength < 500 && tapLength > 0) {
+    if (pinchCounter <= 0 && swipeCounter <= 0 && tapLength < 500 && tapLength > 0) {
         console.log("double tap")
         debug.innerHTML = "double tap"
         clearTimeout(tapHoldTimer)
@@ -105,7 +108,6 @@ const touchEndEvent = e => {
     } else {
         console.log("single tap", tapLength)
         clearTimeout(tapHoldTimer)
-        // debug.innerHTML = "single tap"
         doubleTapTimeout = setTimeout(() => clearTimeout(doubleTapTimeout), 500)
     }
 
@@ -173,17 +175,14 @@ const pointerMove = e => {
             if (diff > previousDiff) {
                 console.log("pinch out")
                 debug.innerHTML = "pinch out"
-                hasPinched = true
+                pinchCounter = 2
             }
 
             if (diff < previousDiff) {
                 console.log("pinch in")
-                hasPinched = true
+                pinchCounter = 2
                 debug.innerHTML = "pinch in"
             }
-        } else {
-            console.log("nope")
-            debug.innerHTML = "__"
         }
 
         previousDiff = diff
