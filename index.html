@@ -3,7 +3,7 @@
     body {
         display: flex;
         justify-content: center;
-        background-color: black;
+        background-color: black !important;
         margin: 0;
         touch-action: none;
     }
@@ -28,18 +28,10 @@
         position: absolute;
         /*background-color: red;*/
     }
-   /* #target {
-        height: 200px;
-        width: 200px;
-        border: 1px solid black;
-        background-color: white;
-    }*/
 </style>
 <div id="circle"></div>
-<div id="debug">_4</div>
+<div id="debug">_5</div>
 <div id="eventArea">
-
-<!-- <div id="target"></div> -->
 
 <script>
 "use strict"
@@ -63,6 +55,7 @@ let touchstartY = 0
 let touchendX = 0
 let touchendY = 0
 let swipeCounter = 0
+let hasPinched = false
 
 const touchStartEvent = e => {
     e.preventDefault()
@@ -83,6 +76,10 @@ const touchEndEvent = e => {
 
     circle.style.display = "none"
 
+    if (hasPinched) {
+        hasPinched = false
+        return
+    }
 
     if (tapHoldTimer) {
         clearTimeout(tapHoldTimer)
@@ -176,10 +173,12 @@ const pointerMove = e => {
             if (diff > previousDiff) {
                 console.log("pinch out")
                 debug.innerHTML = "pinch out"
+                hasPinched = true
             }
 
             if (diff < previousDiff) {
                 console.log("pinch in")
+                hasPinched = true
                 debug.innerHTML = "pinch in"
             }
         } else {
