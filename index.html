@@ -42,6 +42,9 @@
 let tapHoldTimer
 
 const onHold = () => {
+
+    if (swipeCounter>0 || pinchCounter>0) return
+
     console.log("tap and hold")
     circle.style.display = "block"
     debug.innerHTML = "tap and hold"
@@ -63,7 +66,9 @@ let hasPinched = false
 const touchStartEvent = e => {
     e.preventDefault()
 
-    tapHoldTimer = setTimeout(onHold, 500)
+    if (!tapHoldTimer) {
+        tapHoldTimer = setTimeout(onHold, 500)
+    }
     touchstartX = e.changedTouches[0].screenX
     touchstartY = e.changedTouches[0].screenY
 }
@@ -83,11 +88,13 @@ const touchEndEvent = e => {
     if (pinchCounter>0) {
         pinchCounter--
         clearTimeout(tapHoldTimer)
+        tapHoldTimer = undefined
         return
     }
 
     if (tapHoldTimer) {
         clearTimeout(tapHoldTimer)
+        tapHoldTimer = undefined
     }
 
     const currTime = new Date().getTime()
@@ -96,6 +103,7 @@ const touchEndEvent = e => {
 
     if (doubleTapTimeout) {
         clearTimeout(doubleTapTimeout)
+        tapHoldTimer = undefined
     }
 
 
@@ -103,11 +111,13 @@ const touchEndEvent = e => {
         console.log("double tap")
         debug.innerHTML = "double tap"
         clearTimeout(tapHoldTimer)
+        tapHoldTimer = undefined
         event.preventDefault()
         return
     } else {
         console.log("single tap", tapLength)
         clearTimeout(tapHoldTimer)
+        tapHoldTimer = undefined
         doubleTapTimeout = setTimeout(() => clearTimeout(doubleTapTimeout), 500)
     }
 
@@ -117,6 +127,7 @@ const touchEndEvent = e => {
     if (touchendX < (touchstartX-10)) {
         console.log("swiped left")
         clearTimeout(tapHoldTimer)
+        tapHoldTimer = undefined
         debug.innerHTML = "swiped left"
         swipeCounter = 2
     }
@@ -124,6 +135,7 @@ const touchEndEvent = e => {
     if (touchendX > (touchstartX+10)) {
         console.log("swiped right")
         clearTimeout(tapHoldTimer)
+        tapHoldTimer = undefined
         debug.innerHTML = "swiped right"
         swipeCounter = 2
     }
@@ -177,12 +189,14 @@ const pointerMove = e => {
                 debug.innerHTML = "pinch out"
                 pinchCounter = 2
                 clearTimeout(tapHoldTimer)
+                tapHoldTimer = undefined
             }
 
             if (diff < previousDiff) {
                 console.log("pinch in")
                 pinchCounter = 2
                 clearTimeout(tapHoldTimer)
+                tapHoldTimer = undefined
                 debug.innerHTML = "pinch in"
             }
         }
