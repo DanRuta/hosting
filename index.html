@@ -1,3 +1,4 @@
+
 <style>
     body {
         display: flex;
@@ -164,6 +165,9 @@ window.addEventListener("load", () => {
                     console.log("pinch in")
                     debug.innerHTML = "pinch in"
                 }
+            } else {
+                console.log("nope")
+                debug.innerHTML = "__"
             }
 
             previousDiff = diff
@@ -187,12 +191,19 @@ window.addEventListener("load", () => {
 
     }
 
-    eventArea.addEventListener("pointerdown", poninterDown)
-    eventArea.addEventListener("pointermove", pointerMove)
-    eventArea.addEventListener("pointerup", pointerUp)
-    eventArea.addEventListener("pointercancel", pointerUp)
-    eventArea.addEventListener("pointerout", pointerUp)
-    eventArea.addEventListener("pointerleave", pointerUp)
+    // eventArea.addEventListener("pointerdown", poninterDown)
+    // eventArea.addEventListener("pointermove", pointerMove)
+    // eventArea.addEventListener("pointerup", pointerUp)
+    // eventArea.addEventListener("pointercancel", pointerUp)
+    // eventArea.addEventListener("pointerout", pointerUp)
+    // eventArea.addEventListener("pointerleave", pointerUp)
+
+    eventArea.onpointerdown = poninterDown
+    eventArea.onpointermove = pointerMove
+    eventArea.onpointerup = pointerUp
+    eventArea.onpointercancel = pointerUp
+    eventArea.onpointerout = pointerUp
+    eventArea.onpointerleave = pointerUp
 
 
 
